@@ -22,17 +22,26 @@ interface Coffee {
 export function Home() {
   const theme = useTheme();
   const [coffees, setCoffees] = useState<Coffee[]>([]);
-
+  
   useEffect(() => {
     async function fetchCoffees() {
       const response = await api('/coffees');
       setCoffees(response.data);
-
+      
       console.log({coffees: response.data});
     }
     fetchCoffees();
   }, []);
+  
+  const [tempCoffees, setTempCoffees] = useState<Coffee[]>([]);
 
+  useEffect(() => {
+    async function fetchCoffees() {
+      setTempCoffees(coffees);
+      console.log(tempCoffees);
+    }
+    fetchCoffees();
+  }, []);
 
   
   function incrementQuantity(id: string) {
@@ -75,8 +84,46 @@ export function Home() {
         }
         return coffee
       }),
-    )
-    
+    );
+  }
+
+  function filterType(type: string) {
+    if (type == "trad" && coffees == tempCoffees) {
+      var filterCoffees: any[] = [];
+      for (let index = 0; index < coffees.length; index++) {
+        const element = coffees[index];
+        if (element.tags.includes("tradicional")) {
+          filterCoffees.push(element);
+        }
+      }
+      console.log(filterCoffees)
+      setCoffees(filterCoffees)
+    }
+    else if (type == "gela" && coffees == tempCoffees) {
+      var filterCoffees: any[] = [];
+      for (let index = 0; index < coffees.length; index++) {
+        const element = coffees[index];
+        if (element.tags.includes("gelado")) {
+          filterCoffees.push(element);
+        }
+      }
+      console.log(filterCoffees)
+      setCoffees(filterCoffees)
+    }
+    else if (type == "leite" && coffees == tempCoffees) {
+      var filterCoffees: any[] = [];
+      for (let index = 0; index < coffees.length; index++) {
+        const element = coffees[index];
+        if (element.tags.includes("com leite")) {
+          filterCoffees.push(element);
+        }
+      }
+      console.log(filterCoffees)
+      setCoffees(filterCoffees)
+    } 
+    else {
+      setCoffees(tempCoffees)
+    }
   }
 
   return (
@@ -147,21 +194,21 @@ export function Home() {
         <h2>Nossos cafés</h2>
         <Navbar>
           <Radio
-            onClick={() => {}}
+            onClick={() => filterType("trad")}
             isSelected={false}
             value="tradicional"
           >
             <span>Tradicional</span>
           </Radio>
           <Radio
-            onClick={() => {}}
+            onClick={() => filterType("gela")}
             isSelected={false}
             value="gelado"
           >
             <span>Gelado</span>
           </Radio>
           <Radio
-            onClick={() => {}}
+            onClick={() => filterType("leite")}
             isSelected={false}
             value="com leite"
           >
